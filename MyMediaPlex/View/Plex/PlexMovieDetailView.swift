@@ -108,8 +108,8 @@ struct PlexMovieDetailView: View {
                         if movie.isWatched {
                             Label("Watched", systemImage: "checkmark.circle.fill")
                                 .foregroundStyle(.green)
-                        } else if let progress = movie.progressMinutes, progress > 0 {
-                            Label("\(progress) min watched", systemImage: "clock")
+                        } else if movie.progressMinutes > 0 {
+                            Label("\(movie.progressMinutes) min watched", systemImage: "clock")
                                 .foregroundStyle(.orange)
                         } else {
                             Label("Unwatched", systemImage: "circle")
