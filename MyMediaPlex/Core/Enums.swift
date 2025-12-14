@@ -129,31 +129,3 @@ enum HDVideoQuality: Int, Codable {
 	}
 }
 
-enum ImportError: LocalizedError {
-	case fileNotAccessible
-	case noMetadataFound(fileName: String)
-	case missingMetadata(type: String)
-	case unknown(message: String)
-
-	var errorDescription: LocalizedStringKey {
-		switch self {
-			case .fileNotAccessible: return "Could not access file."
-			case .missingMetadata(let type): return metadataError(metadataType: type)
-			case .unknown(let message): return "Unknown Error while reading file:\n\n\(message)."
-			case .noMetadataFound(let fileName):  return "No metadata found in file:\n\n\(fileName)\n\nPlease add metadata before importing."
-		}
-	}
-	
-	var errorCode: Int {
-		switch self {
-			case .fileNotAccessible: return 4
-			case .missingMetadata: return 5
-			case .unknown: return 6
-			case .noMetadataFound: return 7
-		}
-	}
-	
-	private func metadataError(metadataType: String) -> LocalizedStringKey {
-		return "No \(metadataType) found in metadata."
-	}
-}

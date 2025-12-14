@@ -54,7 +54,7 @@ struct HomeView: View {
 		.tabViewCustomization($tabViewCustomization)
 		.tabViewStyle(.sidebarAdaptable)
 		.tabViewSidebarBottomBar() {
-			ImportingView()
+			PlexSyncStatusView()
 		}
 		.alert(commandResource.errorTitle, isPresented: .constant(commandResource.errorMessage != nil)) {
 			Button("OK"){ commandResource.clearError() }

@@ -15,11 +15,7 @@ class CommandResource {
 	/// use CommandResource in Environment in view if available.
 	public static let shared = CommandResource()
 	private init() { }
-	
-	// Importing
-	public var showFileImporter: Bool = false
-	public var showDirectoryImporter: Bool = false
-	
+
 	// Collections
 	public var collectionEditVm: CollectionEditVm?
 

@@ -20,12 +20,13 @@ struct MenuBarCommands: Commands {
 		CommandGroup(replacing: .pasteboard) { EmptyView() }
 		
 		CommandGroup(replacing: .importExport) {
-			Button("Import Files", systemImage: "document.badge.plus") { commandResource.showFileImporter.toggle() }
-				.keyboardShortcut("i", modifiers: .command)
-				.labelStyle(.titleAndIcon)
-			Button("Import Directory", systemImage: "folder.badge.plus") { commandResource.showDirectoryImporter.toggle() }
-				.keyboardShortcut("i", modifiers: [.command, .shift])
-				.labelStyle(.titleAndIcon)
+			Button("Sync with Plex", systemImage: "arrow.triangle.2.circlepath") {
+				Task {
+					await PlexSyncManager.shared.performFullSync()
+				}
+			}
+			.keyboardShortcut("r", modifiers: .command)
+			.labelStyle(.titleAndIcon)
 		}
 		
 		CommandGroup(replacing: .appInfo) {
