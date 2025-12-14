@@ -141,7 +141,7 @@ struct VideoPlayerView: View {
 	}
 
 	/// Updates Plex timeline with current playback progress
-	private func updatePlexProgress(state: PlexAPIService.PlaybackState) {
+	private func updatePlexProgress(state: PlaybackState) {
 		guard let watchable = currentWatchable,
 			  let ratingKey = watchable.plexRatingKey else {
 			return
