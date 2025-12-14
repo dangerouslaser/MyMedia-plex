@@ -1,4 +1,5 @@
 ._*
+.DS_Store
 /MyMediaPlex.xcodeproj/xcuserdata
 /MyMediaPlex.xcodeproj/project.xcworkspace
 claude.md

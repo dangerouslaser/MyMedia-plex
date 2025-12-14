@@ -35,6 +35,14 @@ public struct PreferenceKeys {
 	public static let showLanguageFlags: String = "showLanguageFlags"
 	public static let useInAppPlayer: String = "useInAppPlayer"
 	public static let useMiniSeries: String = "useMiniSeries"
-	
+
+	// Plex Integration
+	public static let plexServerURL: String = "plexServerURL"
+	public static let plexServerUUID: String = "plexServerUUID"
+	public static let plexServerName: String = "plexServerName"
+	public static let plexSelectedLibraries: String = "plexSelectedLibraries"
+	public static let lastPlexSyncDate: String = "lastPlexSyncDate"
+	public static let plexAutoSync: String = "plexAutoSync"
+
 	private init() {}
 }
