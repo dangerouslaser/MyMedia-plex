@@ -175,7 +175,7 @@ struct PlexLibraryMediaContainer: Codable {
 }
 
 /// A library section (Movies, TV Shows, etc.)
-struct PlexLibrarySection: Codable, Identifiable {
+struct PlexLibrarySection: Codable, Identifiable, Hashable {
     let key: String
     let title: String
     let type: String
