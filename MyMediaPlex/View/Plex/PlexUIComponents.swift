@@ -244,8 +244,8 @@ struct PlexEpisodeRow: View {
                     .font(.headline)
 
                 HStack {
-                    if let duration = episode.durationMinutes, duration > 0 {
-                        Text("\(duration) min")
+                    if episode.durationMinutes > 0 {
+                        Text("\(episode.durationMinutes) min")
                     }
                     if let date = episode.originallyAvailableAt {
                         Text(date)
@@ -477,8 +477,7 @@ struct PlexMediaActionsMenu: View {
     }
 
     private func plexWebURL(for item: PlexMetadataItem) -> URL? {
-        guard let serverURL = UserDefaults.standard.string(forKey: PreferenceKeys.plexServerURL),
-              let serverUUID = UserDefaults.standard.string(forKey: PreferenceKeys.plexServerUUID) else {
+        guard let serverUUID = UserDefaults.standard.string(forKey: PreferenceKeys.plexServerUUID) else {
             return nil
         }
         return URL(string: "https://app.plex.tv/desktop/#!/server/\(serverUUID)/details?key=/library/metadata/\(item.ratingKey)")
