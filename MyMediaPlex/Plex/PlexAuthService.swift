@@ -143,10 +143,26 @@ actor PlexAuthService {
         }
 
         do {
+            // Debug: print raw JSON response
+            if let jsonString = String(data: data, encoding: .utf8) {
+                print("Plex resources response: \(jsonString.prefix(2000))")
+            }
+
             let servers = try decoder.decode([PlexServer].self, from: data)
+
+            // Debug: print parsed connections
+            for server in servers where server.isMediaServer {
+                print("Server: \(server.name)")
+                for conn in server.connections {
+                    print("  - Connection: \(conn.uri) (local: \(conn.local), relay: \(conn.relay), address: \(conn.address ?? "nil"))")
+                }
+                print("  Best URL: \(server.bestConnectionURL ?? "none")")
+            }
+
             // Filter to only Plex Media Servers
             return servers.filter { $0.isMediaServer }
         } catch {
+            print("Decoding error: \(error)")
             throw PlexAuthError.decodingError(error)
         }
     }
