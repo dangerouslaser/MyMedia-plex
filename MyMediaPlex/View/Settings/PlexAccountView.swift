@@ -375,9 +375,7 @@ class PlexAccountViewModel {
 
     func syncNow() async {
         isSyncing = true
-        // TODO: Implement sync via PlexSyncManager
-        // For now, just update the last sync date
-        UserDefaults.standard.set(Date(), forKey: PreferenceKeys.lastPlexSyncDate)
+        await PlexSyncManager.shared.performFullSync()
         isSyncing = false
     }
 
