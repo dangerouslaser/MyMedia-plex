@@ -16,11 +16,18 @@ class Movie: IsWatchable, HasGenre, HasCredits {
 	var isFavorite: Bool = false
 	var isPinned: Bool = false
 	var progressMinutes: Int = 0
-	
+
+	// Plex Integration
+	var plexRatingKey: String?
+	var plexServerUUID: String?
+	var plexLibrarySectionID: Int?
+	var streamingURL: String?
+	var plexLastSyncedAt: Date?
+
 	@Transient var year: Int {
 		Calendar.current.component(.year, from: releaseDate)
 	}
-	
+
 	var artwork: Data?
 	var title: String
 	var genre: [String]

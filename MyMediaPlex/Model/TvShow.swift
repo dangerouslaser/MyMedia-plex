@@ -18,7 +18,7 @@ fileprivate let miniSeriesGenres: Set<String> = [
 @Model
 class TvShow: HasGenre {
 	@Attribute(.unique) var id = UUID()
-	
+
 	var dateAdded = Date.now
 	var title: String
 	var year: Int
@@ -27,7 +27,13 @@ class TvShow: HasGenre {
 	var artwork: Data?
 	var isFavorite: Bool = false
 	var isPinned: Bool = false
-	
+
+	// Plex Integration
+	var plexRatingKey: String?
+	var plexServerUUID: String?
+	var plexLibrarySectionID: Int?
+	var plexLastSyncedAt: Date?
+
 	@Relationship(deleteRule: .cascade) var episodes: [Episode]
 	
 	@Transient var isWatched: Bool {
