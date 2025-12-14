@@ -9,7 +9,7 @@ import Foundation
 import Security
 
 /// Manages secure storage of Plex authentication tokens using Keychain
-final class PlexTokenManager {
+final class PlexTokenManager: Sendable {
     static let shared = PlexTokenManager()
 
     private let service = "com.mymediaplex.plex"
