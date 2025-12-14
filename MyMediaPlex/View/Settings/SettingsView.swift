@@ -30,6 +30,11 @@ struct SettingsView: View {
 	
 	var body: some View {
 		TabView {
+			Tab("Plex", systemImage: "server.rack") {
+				PlexAccountView()
+					.frame(height: 400)
+			}
+
 			Tab("General", systemImage: "gearshape") {
 				Form {
 					Section("App Behaviour") {
