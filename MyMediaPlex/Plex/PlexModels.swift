@@ -74,18 +74,28 @@ struct PlexServer: Codable, Identifiable {
         provides.contains("server")
     }
 
-    /// Best connection URL to use (prefers local non-relay connections)
+    /// Best connection URL to use
     var bestConnectionURL: String? {
-        // Prefer local connections
-        if let local = connections.first(where: { $0.local && !$0.relay }) {
+        // First, prefer local connections that are NOT Docker internal networks
+        // Docker uses 172.17-31.x.x ranges which aren't reachable from host
+        if let local = connections.first(where: { $0.local && !$0.relay && !$0.isDockerInternal }) {
             return local.uri
         }
-        // Then non-relay remote
-        if let remote = connections.first(where: { !$0.relay }) {
+        // Then try remote (non-relay) connections - these often work better
+        if let remote = connections.first(where: { !$0.local && !$0.relay }) {
             return remote.uri
         }
-        // Fall back to relay
+        // Try any non-relay connection
+        if let nonRelay = connections.first(where: { !$0.relay }) {
+            return nonRelay.uri
+        }
+        // Fall back to relay as last resort
         return connections.first?.uri
+    }
+
+    /// Returns all connection URLs for testing
+    var allConnectionURLs: [String] {
+        connections.map { $0.uri }
     }
 }
 
@@ -105,6 +115,20 @@ struct PlexConnection: Codable {
         case `protocol`
         case address
         case port
+    }
+
+    /// Returns true if this is a Docker internal network address (172.17-31.x.x)
+    /// These addresses are not reachable from the host machine
+    var isDockerInternal: Bool {
+        guard let address = address else { return false }
+        // Docker typically uses 172.17.0.0/16 through 172.31.0.0/16
+        if address.hasPrefix("172.") {
+            let parts = address.split(separator: ".")
+            if parts.count >= 2, let secondOctet = Int(parts[1]) {
+                return secondOctet >= 17 && secondOctet <= 31
+            }
+        }
+        return false
     }
 }
 
