@@ -67,15 +67,8 @@ struct MediaItemActionsView: View {
 		Divider()
 		
 		if let isWatchable = mediaItem as? any IsWatchable {
-			if isSublerInstalled() {
-				Button("Open in Subler", systemImage: "square.and.arrow.up") { isWatchable.openInSubler() }
-			}
-		
-			Button("Show in Finder", systemImage: "finder") { isWatchable.openInFinder() }
+			Button("View on Plex Web", systemImage: "globe") { isWatchable.openInPlexWeb() }
 		}
-		
-		
-		Button("Update Metadata", systemImage: "arrow.trianglehead.counterclockwise", action: reImportToLibrary)
 		
 		if case let tvShow as TvShow = mediaItem, tvShow.episodes.count == 0 {
 			// Show button only if tvShow has episodes
@@ -104,27 +97,6 @@ struct MediaItemActionsView: View {
 		}
 		
 		onDelete()
-	}
-	
-	func isSublerInstalled() -> Bool {
-		let bundleIdentifier = "org.galad.Subler"
-		
-		if let urls = LSCopyApplicationURLsForBundleIdentifier(bundleIdentifier as CFString, nil)?.takeRetainedValue() as? [URL] {
-			return !urls.isEmpty
-		}
-		return false
-	}
-	
-	func reImportToLibrary() {
-		let currentMediaItem = mediaItem
-		Task {
-			let mediaImporter = MediaImporter(modelContainer: modelContext.container)
-			do {
-				try await mediaImporter.updateMediaItem(mediaItem: currentMediaItem)
-			} catch let importError as ImportError {
-				MediaImporter.showImportError(importError)
-			}
-		}
 	}
 	
 	func playWithAlternatePlayer() {

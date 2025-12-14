@@ -89,6 +89,23 @@ extension MediaItem {
 		withAnimation {
 			self.isWatched.toggle()
 		}
+
+		// Sync watch status with Plex
+		if let watchable = self as? any IsWatchable,
+		   let ratingKey = watchable.plexRatingKey {
+			let isWatched = self.isWatched
+			Task {
+				do {
+					if isWatched {
+						try await PlexAPIService.shared.markWatched(ratingKey: ratingKey)
+					} else {
+						try await PlexAPIService.shared.markUnwatched(ratingKey: ratingKey)
+					}
+				} catch {
+					// Silently fail - local state is still updated
+				}
+			}
+		}
 	}
 	
 	mutating func toggleFavorite() {
@@ -135,83 +152,52 @@ extension MediaItem {
 }
 
 extension IsWatchable {
+	/// Returns the streaming URL for Plex content
 	var url: URL? {
-		get {
-			let bookmarkData = UserDefaults.standard.data(forKey: self.id.uuidString)
-			var isStale = false
-			if let bookmarkData {
-				do {
-					let resolvedURL = try URL(
-						resolvingBookmarkData: bookmarkData,
-						options: [.withSecurityScope],
-						relativeTo: nil,
-						bookmarkDataIsStale: &isStale
-					)
-					if isStale  {
-						if resolvedURL.startAccessingSecurityScopedResource() {
-							defer { resolvedURL.stopAccessingSecurityScopedResource() }
-							let newBookmark = try resolvedURL.bookmarkData(
-								options: [.securityScopeAllowOnlyReadAccess],
-								includingResourceValuesForKeys: nil,
-								relativeTo: nil
-							)
-							UserDefaults.standard.set(newBookmark, forKey: self.id.uuidString)
-						}
-					}
-					return resolvedURL
-				} catch {
-					let watchableTitel = self.title
-					Task { @MainActor in
-						CommandResource.shared.showError(message: "Failed to resolve bookmark for \(watchableTitel).", title: "Error accessing media file", errorCode: 1);
-					}
-					return nil
-				}
-			}
+		// Get the streaming path from the concrete type
+		let streamPath: String? = switch self {
+		case let movie as Movie:
+			movie.streamingURL
+		case let episode as Episode:
+			episode.streamingURL
+		default:
+			nil
+		}
+
+		guard let path = streamPath,
+			  let token = PlexTokenManager.shared.retrieveAuthToken(),
+			  let serverURLString = UserDefaults.standard.string(forKey: PreferenceKeys.plexServerURL) else {
 			return nil
 		}
-		set {
-			if let newValue {
-				let bookmarkData = try? newValue.bookmarkData(
-					options: [.securityScopeAllowOnlyReadAccess],
-					includingResourceValuesForKeys: nil,
-					relativeTo: nil
-				)
-				UserDefaults.standard.set(bookmarkData, forKey: self.id.uuidString)
-			}
+
+		return PlexEndpoints.streamingURL(baseURL: serverURLString, partKey: path, token: token)
+	}
+
+	/// Returns the Plex rating key for this item, if available
+	var plexRatingKey: String? {
+		switch self {
+		case let movie as Movie:
+			return movie.plexRatingKey
+		case let episode as Episode:
+			return episode.plexRatingKey
+		default:
+			return nil
 		}
 	}
-	
+
+	/// Opens this item in Plex Web
 	@MainActor
-	func openInSubler() {
-		guard let url = self.url else { return }
-		
-		if url.startAccessingSecurityScopedResource() {
-
-			let appPath = "/Applications/Subler.app"
-
-			let process = Process()
-			process.executableURL = URL(fileURLWithPath: "/usr/bin/open")
-			process.arguments = ["-a", appPath, url.path]
-			let pipe = Pipe()
-				process.standardError = pipe
-			do {
-				try process.run()
-				let data = pipe.fileHandleForReading.readDataToEndOfFile()
-				if let output = String(data: data, encoding: .utf8), !output.isEmpty {
-					CommandResource.shared.showError(message: "Failed to open Subler: \(output)", title: "Subler Error", errorCode: 2);
-				}
-			} catch {
-				CommandResource.shared.showError(message: "Failed to open Subler: \(error.localizedDescription)", title: "Subler Error", errorCode: 3);
-			}
-			url.stopAccessingSecurityScopedResource()
+	func openInPlexWeb() {
+		guard let ratingKey = self.plexRatingKey,
+			  let serverUUID = (self as? Movie)?.plexServerUUID ?? (self as? Episode)?.plexServerUUID else {
+			return
 		}
-	}
-	
-	@MainActor
-	func openInFinder() {
-		guard let url = self.url, url.startAccessingSecurityScopedResource() else { return }
-		NSWorkspace.shared.activateFileViewerSelecting([url])
-		url.stopAccessingSecurityScopedResource()
+
+		// Construct Plex Web URL
+		let plexWebURL = "https://app.plex.tv/desktop/#!/server/\(serverUUID)/details?key=%2Flibrary%2Fmetadata%2F\(ratingKey)"
+		if let url = URL(string: plexWebURL) {
+			NSWorkspace.shared.open(url)
+		}
 	}
 }
 

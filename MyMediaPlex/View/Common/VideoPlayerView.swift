@@ -75,17 +75,20 @@ struct VideoPlayerView: View {
 		if queue.isEmpty {
 			return
 		}
-		
-		let avItems = queue.compactMap {
-			if let url = $0.url {
-				if url.startAccessingSecurityScopedResource() {
-					let item = AVPlayerItem(url: url)
-					return item
-				}
+
+		let avItems = queue.compactMap { watchable -> AVPlayerItem? in
+			guard let url = watchable.url else {
+				return nil
 			}
-			return nil
+			return AVPlayerItem(url: url)
 		}
-		
+
+		guard !avItems.isEmpty else {
+			errorText = "Unable to load media. Please check your Plex connection."
+			showErrorSheet = true
+			return
+		}
+
 		for item in avItems {
 			player.insert(item, after: nil)
 		}
@@ -93,34 +96,68 @@ struct VideoPlayerView: View {
 		if autoPlay {
 			player.actionAtItemEnd = .advance
 		}
-		
+
 		currentWatchable = queue.removeFirst()
 		player.preventsDisplaySleepDuringVideoPlayback = true
 		player.play()
-		
+
 		if playType == .resume || playType == .resumeCurrentEpisode {
 			let progressSeconds = Double((currentWatchable?.progressMinutes ?? 0) * 60)
 			self.player.seek(to: CMTime(seconds: progressSeconds, preferredTimescale: 1))
 		}
+
+		// Report playback started to Plex
+		updatePlexProgress(state: .playing)
 	}
 	
 	func videoDidFinish() {
 		currentWatchable?.progressMinutes = currentWatchable?.durationMinutes ?? 0
 		currentWatchable?.isWatched = true
-		currentWatchable?.url?.stopAccessingSecurityScopedResource()
-		
-		if(queue.isEmpty) {
+
+		// Mark as watched on Plex (scrobble)
+		if let ratingKey = currentWatchable?.plexRatingKey {
+			Task {
+				try? await PlexAPIService.shared.markWatched(ratingKey: ratingKey)
+			}
+		}
+
+		if queue.isEmpty {
 			dismiss()
 			return
 		}
-			
+
 		currentWatchable = queue.removeFirst()
+		updatePlexProgress(state: .playing)
 	}
 	
 	func onDisappear() {
-		currentWatchable?.progressMinutes = Int(player.currentItem?.currentTime().seconds ?? 0) / 60
-		queue.forEach { $0.url?.stopAccessingSecurityScopedResource() }
+		let currentSeconds = player.currentItem?.currentTime().seconds ?? 0
+		currentWatchable?.progressMinutes = Int(currentSeconds) / 60
+
+		// Report progress to Plex when stopping playback
+		updatePlexProgress(state: .stopped)
+
 		nowPlayingInfoCenter.nowPlayingInfo = nil
+	}
+
+	/// Updates Plex timeline with current playback progress
+	private func updatePlexProgress(state: PlexAPIService.PlaybackState) {
+		guard let watchable = currentWatchable,
+			  let ratingKey = watchable.plexRatingKey else {
+			return
+		}
+
+		let currentTimeMs = Int((player.currentItem?.currentTime().seconds ?? 0) * 1000)
+		let durationMs = watchable.durationMinutes * 60 * 1000
+
+		Task {
+			try? await PlexAPIService.shared.updateProgress(
+				ratingKey: ratingKey,
+				timeMs: currentTimeMs,
+				durationMs: durationMs,
+				state: state
+			)
+		}
 	}
 
 	private func updateNowPlayingInfo() {
