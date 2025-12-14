@@ -463,7 +463,7 @@ struct PlexChildrenResponse: Codable {
 
 // MARK: - Image URL Helper
 
-/// Configuration for constructing authenticated image URLs
+/// Configuration for constructing authenticated image and streaming URLs
 struct PlexImageURLConfig: Sendable {
     let baseURL: String
     let token: String
@@ -472,5 +472,11 @@ struct PlexImageURLConfig: Sendable {
     func url(for path: String?) -> URL? {
         guard let path = path, !path.isEmpty else { return nil }
         return PlexEndpoints.imageURL(baseURL: baseURL, imagePath: path, token: token)
+    }
+
+    /// Constructs an authenticated streaming URL for video playback
+    func streamingURL(partKey: String?) -> URL? {
+        guard let partKey = partKey, !partKey.isEmpty else { return nil }
+        return PlexEndpoints.streamingURL(baseURL: baseURL, partKey: partKey, token: token)
     }
 }

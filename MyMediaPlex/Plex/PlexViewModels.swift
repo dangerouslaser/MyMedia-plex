@@ -206,10 +206,7 @@ class PlexMovieDetailViewModel {
     }
 
     var streamingURL: URL? {
-        guard let partKey = movie?.streamingPartKey else { return nil }
-        return Task {
-            await PlexAPIService.shared.streamingURL(partKey: partKey)
-        }.value as? URL
+        imageConfig?.streamingURL(partKey: movie?.streamingPartKey)
     }
 }
 
@@ -351,10 +348,7 @@ class PlexEpisodeDetailViewModel {
     }
 
     var streamingURL: URL? {
-        guard let partKey = episode?.streamingPartKey else { return nil }
-        return Task {
-            await PlexAPIService.shared.streamingURL(partKey: partKey)
-        }.value as? URL
+        imageConfig?.streamingURL(partKey: episode?.streamingPartKey)
     }
 }
 
