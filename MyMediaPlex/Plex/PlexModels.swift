@@ -200,7 +200,8 @@ struct PlexLibrarySection: Codable, Identifiable {
 // MARK: - Media Item Models
 
 /// A metadata item (can be movie, show, season, or episode)
-struct PlexMetadataItem: Codable {
+struct PlexMetadataItem: Codable, Hashable, Identifiable {
+    var id: String { ratingKey }
     let ratingKey: String
     let key: String
     let type: String
@@ -362,19 +363,19 @@ struct PlexMetadataItem: Codable {
 // MARK: - Supporting Types
 
 /// Generic tag (genre, director, writer, etc.)
-struct PlexTag: Codable {
+struct PlexTag: Codable, Hashable {
     let tag: String
 }
 
 /// Role/cast member with character name
-struct PlexRole: Codable {
+struct PlexRole: Codable, Hashable {
     let tag: String
     let role: String?
     let thumb: String?
 }
 
 /// Media version info
-struct PlexMedia: Codable {
+struct PlexMedia: Codable, Hashable {
     let id: Int?
     let duration: Int?
     let videoResolution: String?
@@ -416,7 +417,7 @@ struct PlexMedia: Codable {
 }
 
 /// Media file part
-struct PlexPart: Codable {
+struct PlexPart: Codable, Hashable {
     let id: Int?
     let key: String
     let duration: Int?
@@ -437,7 +438,7 @@ struct PlexPart: Codable {
 }
 
 /// Stream info (video, audio, subtitle tracks)
-struct PlexStream: Codable {
+struct PlexStream: Codable, Hashable {
     let id: Int?
     let streamType: Int  // 1=video, 2=audio, 3=subtitle
     let codec: String?
