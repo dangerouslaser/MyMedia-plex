@@ -51,8 +51,8 @@ actor PlexAuthService {
         let headers = PlexHeaders.forPinRequest(clientIdentifier: clientIdentifier)
         headers.forEach { request.setValue($1, forHTTPHeaderField: $0) }
 
-        // POST body for strong PIN
-        request.httpBody = "strong=true".data(using: .utf8)
+        // Empty POST body for simple 4-character PIN
+        request.httpBody = Data()
 
         let (data, response) = try await session.data(for: request)
 
