@@ -138,31 +138,40 @@ struct PlexAccountView: View {
     }
 
     private var serverSelectionView: some View {
-        ForEach(viewModel.servers) { server in
-            Button {
-                Task {
-                    await viewModel.selectServer(server)
-                }
-            } label: {
-                HStack {
-                    VStack(alignment: .leading) {
-                        Text(server.name)
-                            .font(.headline)
-                        Text(server.owned ? "Owned" : "Shared")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+        Group {
+            ForEach(viewModel.servers) { server in
+                Button {
+                    Task {
+                        await viewModel.selectServer(server)
                     }
-                    Spacer()
-                    if viewModel.isSelectingServer {
-                        ProgressView()
-                            .scaleEffect(0.7)
-                    } else {
-                        Image(systemName: "chevron.right")
-                            .foregroundStyle(.secondary)
+                } label: {
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(server.name)
+                                .font(.headline)
+                            Text(server.owned ? "Owned" : "Shared")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        if viewModel.isSelectingServer {
+                            ProgressView()
+                                .scaleEffect(0.7)
+                        } else {
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
+                .buttonStyle(.plain)
+                .disabled(viewModel.isSelectingServer)
             }
-            .buttonStyle(.plain)
+
+            if let error = viewModel.serverError {
+                Text(error)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
         }
     }
 
@@ -221,6 +230,7 @@ class PlexAccountViewModel {
     var username: String?
     var isSelectingServer = false
     var isSyncing = false
+    var serverError: String?
 
     // Settings
     var autoSync: Bool {
@@ -329,6 +339,7 @@ class PlexAccountViewModel {
 
     func selectServer(_ server: PlexServer) async {
         isSelectingServer = true
+        serverError = nil
 
         do {
             try await PlexAuthService.shared.selectServer(server)
@@ -337,7 +348,8 @@ class PlexAccountViewModel {
             // Load libraries for selected server
             await loadLibraries()
         } catch {
-            // Handle error
+            serverError = error.localizedDescription
+            print("Server selection error: \(error)")
         }
 
         isSelectingServer = false

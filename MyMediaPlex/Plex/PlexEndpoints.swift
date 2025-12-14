@@ -26,8 +26,8 @@ enum PlexEndpoints {
     }
 
     /// Get user's available resources (servers)
-    /// GET https://plex.tv/api/v2/resources
-    static let resources = "\(plexTVBase)/api/v2/resources"
+    /// GET https://plex.tv/api/v2/resources?includeHttps=1&includeRelay=1
+    static let resources = "\(plexTVBase)/api/v2/resources?includeHttps=1&includeRelay=1&includeIPv6=0"
 
     /// Get authenticated user info
     /// GET https://plex.tv/api/v2/user
