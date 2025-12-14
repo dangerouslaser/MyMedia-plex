@@ -15,14 +15,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		DD956C812D95D6EA0033A363 /* MyMedia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyMedia.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DD956C812D95D6EA0033A363 /* MyMediaPlex.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyMediaPlex.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD95FB962DC7E88900149619 /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		DD956C832D95D6EA0033A363 /* MyMedia */ = {
+		DD956C832D95D6EA0033A363 /* MyMediaPlex */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MyMedia;
+			path = MyMediaPlex;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -46,7 +46,7 @@
 		DD956C782D95D6EA0033A363 = {
 			isa = PBXGroup;
 			children = (
-				DD956C832D95D6EA0033A363 /* MyMedia */,
+				DD956C832D95D6EA0033A363 /* MyMediaPlex */,
 				DD95FB952DC7E88800149619 /* Frameworks */,
 				DD956C822D95D6EA0033A363 /* Products */,
 			);
@@ -55,7 +55,7 @@
 		DD956C822D95D6EA0033A363 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DD956C812D95D6EA0033A363 /* MyMedia.app */,
+				DD956C812D95D6EA0033A363 /* MyMediaPlex.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -71,9 +71,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		DD956C802D95D6EA0033A363 /* MyMedia */ = {
+		DD956C802D95D6EA0033A363 /* MyMediaPlex */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DD956C922D95D6EE0033A363 /* Build configuration list for PBXNativeTarget "MyMedia" */;
+			buildConfigurationList = DD956C922D95D6EE0033A363 /* Build configuration list for PBXNativeTarget "MyMediaPlex" */;
 			buildPhases = (
 				DD956C7D2D95D6EA0033A363 /* Sources */,
 				DD956C7E2D95D6EA0033A363 /* Frameworks */,
@@ -84,17 +84,17 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				DD956C832D95D6EA0033A363 /* MyMedia */,
+				DD956C832D95D6EA0033A363 /* MyMediaPlex */,
 			);
-			name = MyMedia;
+			name = MyMediaPlex;
 			packageProductDependencies = (
 				DD8065622DB2960200B6A629 /* OrderedCollections */,
 				DD95FB932DC7ACE100149619 /* AwesomeSwiftyComponents */,
 				DDA200542DD8C21A00C1F7F8 /* MarkdownUI */,
 				DD42F35B2DD9EC5B000EE9C8 /* SwiftUIIntrospect */,
 			);
-			productName = MyMedia;
-			productReference = DD956C812D95D6EA0033A363 /* MyMedia.app */;
+			productName = MyMediaPlex;
+			productReference = DD956C812D95D6EA0033A363 /* MyMediaPlex.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -112,7 +112,7 @@
 					};
 				};
 			};
-			buildConfigurationList = DD956C7C2D95D6EA0033A363 /* Build configuration list for PBXProject "MyMedia" */;
+			buildConfigurationList = DD956C7C2D95D6EA0033A363 /* Build configuration list for PBXProject "MyMediaPlex" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -133,7 +133,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				DD956C802D95D6EA0033A363 /* MyMedia */,
+				DD956C802D95D6EA0033A363 /* MyMediaPlex */,
 			);
 		};
 /* End PBXProject section */
@@ -289,7 +289,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				CODE_SIGN_ENTITLEMENTS = MyMedia/MyMedia.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MyMediaPlex/MyMediaPlex.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -301,7 +301,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = MyMedia;
+				INFOPLIST_KEY_CFBundleDisplayName = MyMediaPlex;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.video";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -310,7 +310,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 2.0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.photagralenphie.MyMedia;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mymediaplex.MyMediaPlex;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -324,7 +324,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				CODE_SIGN_ENTITLEMENTS = MyMedia/MyMedia.entitlements;
+				CODE_SIGN_ENTITLEMENTS = MyMediaPlex/MyMediaPlex.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
@@ -336,7 +336,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = MyMedia;
+				INFOPLIST_KEY_CFBundleDisplayName = MyMediaPlex;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.video";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -345,7 +345,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				MARKETING_VERSION = 2.0.1;
-				PRODUCT_BUNDLE_IDENTIFIER = com.photagralenphie.MyMedia;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mymediaplex.MyMediaPlex;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -356,7 +356,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		DD956C7C2D95D6EA0033A363 /* Build configuration list for PBXProject "MyMedia" */ = {
+		DD956C7C2D95D6EA0033A363 /* Build configuration list for PBXProject "MyMediaPlex" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DD956C902D95D6EE0033A363 /* Debug */,
@@ -365,7 +365,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DD956C922D95D6EE0033A363 /* Build configuration list for PBXNativeTarget "MyMedia" */ = {
+		DD956C922D95D6EE0033A363 /* Build configuration list for PBXNativeTarget "MyMediaPlex" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DD956C932D95D6EE0033A363 /* Debug */,

@@ -1,6 +1,6 @@
 //
-//  MyMediaApp.swift
-//  MyMedia
+//  MyMediaPlexApp.swift
+//  MyMediaPlex
 //
 //  Created by Jonas Helmer on 27.03.25.
 //
@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct MyMediaApp: App {
+struct MyMediaPlexApp: App {
     var sharedModelContainer: ModelContainer = {
 		let schema = Schema([ TvShow.self, Movie.self, MediaCollection.self ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
@@ -51,7 +51,7 @@ struct MyMediaApp: App {
 		.commandsRemoved()
 		.defaultLaunchBehavior(.suppressed)
 		
-		Window("About MyMedia", id: "about") {
+		Window("About MyMediaPlex", id: "about") {
 			AboutView()
 				.toolbar(removing: .title)
 				.toolbarBackground(.hidden, for: .windowToolbar)
