@@ -460,3 +460,17 @@ struct PlexChildrenResponse: Codable {
         case mediaContainer = "MediaContainer"
     }
 }
+
+// MARK: - Image URL Helper
+
+/// Configuration for constructing authenticated image URLs
+struct PlexImageURLConfig: Sendable {
+    let baseURL: String
+    let token: String
+
+    /// Constructs an authenticated image URL for use with AsyncImage
+    func url(for path: String?) -> URL? {
+        guard let path = path, !path.isEmpty else { return nil }
+        return PlexEndpoints.imageURL(baseURL: baseURL, imagePath: path, token: token)
+    }
+}

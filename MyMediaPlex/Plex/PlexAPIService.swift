@@ -242,6 +242,39 @@ actor PlexAPIService {
         return response.mediaContainer.metadata ?? []
     }
 
+    /// Fetches recently added items from a library section
+    func fetchRecentlyAdded(sectionID: Int, limit: Int = 50) async throws -> [PlexMetadataItem] {
+        guard let baseURL = serverURL else {
+            throw PlexAPIError.noServerConfigured
+        }
+
+        let url = PlexEndpoints.recentlyAdded(baseURL: baseURL, sectionID: sectionID, limit: limit)
+        let response: PlexLibraryContentResponse = try await get(url)
+        return response.mediaContainer.metadata ?? []
+    }
+
+    /// Fetches on deck items (continue watching)
+    func fetchOnDeck(limit: Int = 50) async throws -> [PlexMetadataItem] {
+        guard let baseURL = serverURL else {
+            throw PlexAPIError.noServerConfigured
+        }
+
+        let url = PlexEndpoints.onDeck(baseURL: baseURL, limit: limit)
+        let response: PlexLibraryContentResponse = try await get(url)
+        return response.mediaContainer.metadata ?? []
+    }
+
+    /// Fetches unwatched items from a library section
+    func fetchUnwatched(sectionID: Int, limit: Int = 100) async throws -> [PlexMetadataItem] {
+        guard let baseURL = serverURL else {
+            throw PlexAPIError.noServerConfigured
+        }
+
+        let url = PlexEndpoints.unwatched(baseURL: baseURL, sectionID: sectionID, limit: limit)
+        let response: PlexLibraryContentResponse = try await get(url)
+        return response.mediaContainer.metadata ?? []
+    }
+
     // MARK: - Watch Status
 
     /// Marks an item as watched
@@ -302,6 +335,24 @@ actor PlexAPIService {
             return nil
         }
         return PlexEndpoints.streamingURL(baseURL: baseURL, partKey: partKey, token: token)
+    }
+
+    /// Constructs an authenticated image URL for use with AsyncImage
+    func imageURL(path: String?) -> URL? {
+        guard let path = path, !path.isEmpty,
+              let baseURL = serverURL,
+              let token = authToken else {
+            return nil
+        }
+        return PlexEndpoints.imageURL(baseURL: baseURL, imagePath: path, token: token)
+    }
+
+    /// Returns configuration needed to construct image URLs (for use in views)
+    var imageURLConfig: PlexImageURLConfig? {
+        guard let baseURL = serverURL, let token = authToken else {
+            return nil
+        }
+        return PlexImageURLConfig(baseURL: baseURL, token: token)
     }
 
     // MARK: - Server Connection Testing

@@ -44,12 +44,6 @@ struct PlexAccountView: View {
                 }
             }
 
-            // Sync Settings (when fully configured)
-            if viewModel.isFullyConfigured {
-                Section("Sync") {
-                    syncSettingsView
-                }
-            }
         }
         .formStyle(.grouped)
         .task {
@@ -195,25 +189,6 @@ struct PlexAccountView: View {
         }
     }
 
-    private var syncSettingsView: some View {
-        Group {
-            Toggle("Auto-sync on launch", isOn: $viewModel.autoSync)
-
-            if let lastSync = viewModel.lastSyncDate {
-                LabeledContent("Last synced") {
-                    Text(lastSync, style: .relative)
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            Button("Sync Now") {
-                Task {
-                    await viewModel.syncNow()
-                }
-            }
-            .disabled(viewModel.isSyncing)
-        }
-    }
 }
 
 // MARK: - View Model
@@ -229,25 +204,10 @@ class PlexAccountViewModel {
     var selectedLibraryIDs: Set<String> = []
     var username: String?
     var isSelectingServer = false
-    var isSyncing = false
     var serverError: String?
-
-    // Settings
-    var autoSync: Bool {
-        get { UserDefaults.standard.bool(forKey: PreferenceKeys.plexAutoSync) }
-        set { UserDefaults.standard.set(newValue, forKey: PreferenceKeys.plexAutoSync) }
-    }
-
-    var lastSyncDate: Date? {
-        UserDefaults.standard.object(forKey: PreferenceKeys.lastPlexSyncDate) as? Date
-    }
 
     var selectedServerName: String? {
         UserDefaults.standard.string(forKey: PreferenceKeys.plexServerName)
-    }
-
-    var isFullyConfigured: Bool {
-        connectionState == .connected && selectedServerName != nil && !selectedLibraryIDs.isEmpty
     }
 
     // Private
@@ -306,6 +266,7 @@ class PlexAccountViewModel {
                     // Authorization successful
                     await MainActor.run {
                         connectionState = .connected
+                        NotificationCenter.default.post(name: .plexAuthStateChanged, object: nil)
                     }
 
                     // Fetch user and servers
@@ -383,14 +344,6 @@ class PlexAccountViewModel {
         UserDefaults.standard.set(Array(selectedLibraryIDs), forKey: PreferenceKeys.plexSelectedLibraries)
     }
 
-    // MARK: - Sync
-
-    func syncNow() async {
-        isSyncing = true
-        await PlexSyncManager.shared.performFullSync()
-        isSyncing = false
-    }
-
     // MARK: - Sign Out
 
     func signOut() async {
@@ -406,6 +359,8 @@ class PlexAccountViewModel {
         libraries = []
         selectedLibraryIDs = []
         username = nil
+
+        NotificationCenter.default.post(name: .plexAuthStateChanged, object: nil)
     }
 
     // MARK: - Private Helpers

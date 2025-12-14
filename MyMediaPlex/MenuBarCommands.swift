@@ -19,15 +19,7 @@ struct MenuBarCommands: Commands {
 		CommandGroup(replacing: .systemServices) { EmptyView() }
 		CommandGroup(replacing: .pasteboard) { EmptyView() }
 		
-		CommandGroup(replacing: .importExport) {
-			Button("Sync with Plex", systemImage: "arrow.triangle.2.circlepath") {
-				Task {
-					await PlexSyncManager.shared.performFullSync()
-				}
-			}
-			.keyboardShortcut("r", modifiers: .command)
-			.labelStyle(.titleAndIcon)
-		}
+		CommandGroup(replacing: .importExport) { EmptyView() }
 		
 		CommandGroup(replacing: .appInfo) {
 			Button("About", systemImage: "info.circle") { openWindow(id: "about") }

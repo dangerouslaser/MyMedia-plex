@@ -32,7 +32,42 @@ enum PlayType: Codable {
 }
 
 struct PlayAction: Hashable, Codable {
+	// SwiftData identifiers (legacy)
 	let identifiers: [PersistentIdentifier]
 	let playType: PlayType
+
+	// Plex streaming properties
+	let plexRatingKey: String?
+	let plexTitle: String?
+	let plexStreamingURL: URL?
+	let plexDurationMs: Int?
+	let plexResumePositionMs: Int?
+
+	// Legacy initializer for SwiftData
+	init(identifiers: [PersistentIdentifier], playType: PlayType) {
+		self.identifiers = identifiers
+		self.playType = playType
+		self.plexRatingKey = nil
+		self.plexTitle = nil
+		self.plexStreamingURL = nil
+		self.plexDurationMs = nil
+		self.plexResumePositionMs = nil
+	}
+
+	// Plex streaming initializer
+	init(ratingKey: String, title: String, streamingURL: URL, durationMs: Int, resumePositionMs: Int) {
+		self.identifiers = []
+		self.playType = resumePositionMs > 0 ? .resume : .play
+		self.plexRatingKey = ratingKey
+		self.plexTitle = title
+		self.plexStreamingURL = streamingURL
+		self.plexDurationMs = durationMs
+		self.plexResumePositionMs = resumePositionMs
+	}
+
+	/// Returns true if this is a Plex streaming action
+	var isPlexStreaming: Bool {
+		plexStreamingURL != nil
+	}
 }
 

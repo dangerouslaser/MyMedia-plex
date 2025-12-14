@@ -241,7 +241,6 @@ actor PlexAuthService {
         UserDefaults.standard.removeObject(forKey: PreferenceKeys.plexServerUUID)
         UserDefaults.standard.removeObject(forKey: PreferenceKeys.plexServerName)
         UserDefaults.standard.removeObject(forKey: PreferenceKeys.plexSelectedLibraries)
-        UserDefaults.standard.removeObject(forKey: PreferenceKeys.lastPlexSyncDate)
     }
 
     // MARK: - Status Checks

@@ -31,8 +31,6 @@ struct MyMediaPlexApp: App {
 				.environment(commandResource)
 				.onAppear {
 					NSWindow.allowsAutomaticWindowTabbing = false
-					// Initialize PlexSyncManager with model context
-					PlexSyncManager.shared.setModelContext(sharedModelContainer.mainContext)
 				}
 				.onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in
 					try? sharedModelContainer.mainContext.save()

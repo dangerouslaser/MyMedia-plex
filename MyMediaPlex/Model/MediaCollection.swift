@@ -15,18 +15,23 @@ public class MediaCollection: IsPinnable
 	var title: String
 	var collectionDescription: String?
 	var artwork: Data?
+
+	// Legacy SwiftData relationships (kept for migration)
 	private var tvShows: [TvShow] = []
 	private var movies: [Movie] = []
 	private var episodes: [Episode] = []
-	
+
+	// Plex rating keys for pure Plex client
+	var plexRatingKeys: [String] = []
+
 	@Transient var mediaItems: [any MediaItem] {
 		(tvShows + movies + episodes).sorted { $0.title < $1.title }
 	}
-	
+
 	var dateAdded: Date = Date.now
 	var isPinned: Bool = false
 	var sort: SortOption = SortOption.title
-	
+
 	// Enum don't seem to work in lightweight migrations
 	// https://stackoverflow.com/questions/79255075/how-to-add-enum-field-to-my-swiftdata-model
 	private var viewPreferenceRawValue: Int = 0
@@ -39,21 +44,41 @@ public class MediaCollection: IsPinnable
 		}
 	}
 	var useSections = true
-	
+
 	@Transient var isWatched: Bool {
 		tvShows.allSatisfy(\.isWatched)
 	}
-	
+
 	init(title: String, artwork: Data?) {
 		self.title = title
 		self.artwork = artwork
 	}
-	
+
+	// MARK: - Plex Item Management
+
+	/// Adds a Plex item to the collection by rating key
+	func addPlexItem(ratingKey: String) {
+		guard !plexRatingKeys.contains(ratingKey) else { return }
+		plexRatingKeys.append(ratingKey)
+	}
+
+	/// Removes a Plex item from the collection by rating key
+	func removePlexItem(ratingKey: String) {
+		plexRatingKeys.removeAll { $0 == ratingKey }
+	}
+
+	/// Checks if a Plex item is in the collection
+	func containsPlexItem(ratingKey: String) -> Bool {
+		plexRatingKeys.contains(ratingKey)
+	}
+
+	// MARK: - Legacy Media Item Management
+
 	func addMediaItem(_ media: any MediaItem) {
 		if mediaItems.contains(where: { $0.id == media.id }) {
 			return
 		}
-		
+
 		switch media {
 			case let show as TvShow:
 				self.tvShows.append(show)
@@ -64,8 +89,8 @@ public class MediaCollection: IsPinnable
 			default: break
 		}
 	}
-	
-	func removeMediaItem(_ media: any MediaItem) {	
+
+	func removeMediaItem(_ media: any MediaItem) {
 		switch media {
 			case let show as TvShow:
 				self.tvShows.removeAll(where: { $0.id == show.id })
@@ -76,7 +101,7 @@ public class MediaCollection: IsPinnable
 			default: return
 		}
 	}
-	
+
 	func isItemInCollection(_ media: any MediaItem) -> Bool {
 		switch media {
 			case let show as TvShow:
@@ -88,7 +113,7 @@ public class MediaCollection: IsPinnable
 			default: return false
 		}
 	}
-	
+
 	func togglePinned() {
 		withAnimation {
 			self.isPinned.toggle()

@@ -68,6 +68,24 @@ enum PlexEndpoints {
         return "\(baseURL)/library/metadata/\(ratingKey)/allLeaves"
     }
 
+    /// Get recently added items from a library section
+    /// GET {baseURL}/library/sections/{sectionID}/recentlyAdded
+    static func recentlyAdded(baseURL: String, sectionID: Int, limit: Int = 50) -> String {
+        return "\(baseURL)/library/sections/\(sectionID)/recentlyAdded?X-Plex-Container-Start=0&X-Plex-Container-Size=\(limit)"
+    }
+
+    /// Get on deck items (continue watching)
+    /// GET {baseURL}/library/onDeck
+    static func onDeck(baseURL: String, limit: Int = 50) -> String {
+        return "\(baseURL)/library/onDeck?X-Plex-Container-Start=0&X-Plex-Container-Size=\(limit)"
+    }
+
+    /// Get unwatched items from a library section
+    /// GET {baseURL}/library/sections/{sectionID}/unwatched
+    static func unwatched(baseURL: String, sectionID: Int, limit: Int = 100) -> String {
+        return "\(baseURL)/library/sections/\(sectionID)/unwatched?X-Plex-Container-Start=0&X-Plex-Container-Size=\(limit)"
+    }
+
     // MARK: - Watch Status Endpoints
 
     /// Mark item as watched (scrobble)
